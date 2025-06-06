@@ -1,8 +1,12 @@
-# Use the base image
-FROM modenaf360/gotty:latest
- 
-# Expose the desired port
-EXPOSE 8080
- 
-# Start Gotty with the specified command
-CMD ["gotty", "-r", "-w", "--port", "8080", "/bin/bash"]
+FROM python:3.7-alpine
+
+WORKDIR /code
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+COPY . .
+CMD ["flask", "run"]
